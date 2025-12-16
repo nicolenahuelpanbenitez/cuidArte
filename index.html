@@ -1,0 +1,3052 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>CuidArte - Cuidando a las que cuidan</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      /* --------- PERFIL / LOGOUT --------- */
+      .profile-card {
+        background: linear-gradient(135deg, #f3e0d8, #fff9f6);
+        border-radius: 18px;
+        padding: 14px 14px;
+        margin-top: 14px;
+        border: 1px solid #e7d8d1;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .profile-avatar {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: #c97e63;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        font-weight: 600;
+        flex: 0 0 46px;
+      }
+
+      .profile-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .profile-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #444;
+      }
+
+      .profile-email {
+        font-size: 12px;
+        color: #777;
+      }
+
+      .profile-actions {
+        display: flex;
+        gap: 6px;
+      }
+
+      .profile-logout-btn {
+        border-radius: 999px;
+        border: none;
+        padding: 8px 12px;
+        font-size: 12px;
+        font-weight: 600;
+        background: #c97e63;
+        color: #fff;
+        cursor: pointer;
+      }
+
+      .profile-logout-btn.secondary {
+        background: #f3e0d8;
+        color: #444;
+      }
+      /* --------- ESTILOS GENERALES --------- */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+      }
+
+      body {
+        background: #e3ded8;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* --------- CONTENEDOR TIPO CELULAR --------- */
+      .phone-frame {
+        width: 390px;
+        height: 800px;
+        background: #000;
+        border-radius: 32px;
+        padding: 10px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .phone-screen {
+        width: 100%;
+        height: 100%;
+        border-radius: 28px;
+        overflow: hidden;
+        background: #f7f4ef; /* crema */
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+
+      /* --------- BARRA DE ESTADO (SIMULADA) --------- */
+      .status-bar {
+        height: 24px;
+        padding: 4px 12px;
+        font-size: 11px;
+        color: #fdfdfd;
+        background: #c97e63; /* terracota */
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      /* --------- HEADER --------- */
+      .header {
+        background: #c97e63; /* terracota */
+        color: #fff;
+        padding: 12px 18px 18px;
+        position: relative;
+      }
+
+      .header-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .header-profile-btn {
+        position: relative;
+        width: 38px;
+        height: 38px;
+        border-radius: 999px;
+        border: none;
+        background: rgba(255, 255, 255, 0.22);
+        color: #fff;
+        font-weight: 700;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+      }
+
+      .header-profile-btn:active {
+        transform: translateY(1px);
+      }
+
+      .header-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      .header-subtitle {
+        font-size: 14px;
+        opacity: 0.9;
+      }
+
+      /* --------- CONTENIDO PRINCIPAL --------- */
+      .content {
+        flex: 1;
+        padding: 14px 16px 0;
+        overflow-y: auto;
+      }
+
+      .screen {
+        display: none;
+      }
+
+      .screen.active {
+        display: block;
+      }
+
+      /* --------- TARJETAS Y ELEMENTOS COMUNES --------- */
+      .card {
+        background: #d9b4a7; /* rosa tierra */
+        border-radius: 16px;
+        padding: 14px 14px;
+        margin-bottom: 14px;
+        color: #333;
+      }
+
+      .card.light {
+        background: #fff9f6;
+      }
+
+      .card-title {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+
+      .card-text {
+        font-size: 14px;
+        line-height: 1.4;
+      }
+
+      .section-title {
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #444;
+      }
+
+      .small {
+        font-size: 13px;
+      }
+
+      /* --------- BOTONES --------- */
+      .btn-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .btn-pill {
+        flex: 1;
+        border-radius: 999px;
+        border: none;
+        padding: 8px 10px;
+        font-size: 14px;
+        background: #fff;
+        color: #444;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+      }
+
+      .btn-pill span.emoji {
+        font-size: 18px;
+      }
+
+      .btn-primary {
+        border-radius: 999px;
+        border: none;
+        padding: 10px 16px;
+        font-size: 14px;
+        font-weight: 600;
+        background: #c97e63;
+        color: #fff;
+        cursor: pointer;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        margin-top: 6px;
+      }
+
+      .btn-primary:active,
+      .btn-pill:active {
+        transform: translateY(1px);
+      }
+
+      .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+
+      .chip {
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-size: 13px;
+        background: #f3e0d8;
+        color: #444;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+      }
+      .chip.selected {
+        background: #c97e63;
+        color: #fff;
+      }
+
+      /* --------- LISTAS --------- */
+      .list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 6px;
+      }
+
+      .list-item {
+        background: #fff;
+        border-radius: 12px;
+        padding: 10px 12px;
+        font-size: 13px;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+      }
+
+      .list-item-title {
+        font-weight: 600;
+        font-size: 13px;
+        color: #444;
+      }
+
+      .list-item-time {
+        font-size: 12px;
+        color: #777;
+      }
+
+      /* --------- PANEL DE NOTIFICACIONES --------- */
+      .notification-panel {
+        background: #fff9f6;
+        border-radius: 16px;
+        padding: 10px 12px;
+        margin-bottom: 12px;
+        border-left: 4px solid #c97e63;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+      }
+
+      .notification-panel-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #444;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .notification-panel-title span {
+        font-size: 16px;
+      }
+
+      .notification-list {
+        list-style: none;
+        overflow-y: auto;
+        padding-left: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 7px; /* separación entre notificaciones */
+      }
+
+      .notification-item {
+        font-size: 12px;
+        color: #555;
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+        padding: 4px 6px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background 0.15s ease-in-out;
+      }
+
+      .notification-item:hover {
+        background: #f3e0d8;
+      }
+
+      .notification-item-text {
+        flex: 1;
+        line-height: 1.3;
+      }
+
+      .notification-item-time {
+        font-size: 11px;
+        color: #999;
+      }
+
+      /* Notificaciones: pantalla completa (tipo Facebook) */
+      #screen-notifications {
+        height: 100%;
+      }
+
+      #screen-notifications.active {
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* el feed debe ocupar el resto del alto */
+      #screen-notifications .card.light {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 0;
+      }
+
+      #screen-notifications #notifications-feed {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        max-height: none;
+        padding-bottom: 70px; /* espacio para el botón fijo */
+      }
+
+      /* Botón fijo de notificaciones (separado del menú inferior) */
+      #screen-notifications .mark-read-btn {
+        position: sticky;
+        bottom: 20px; /* misma referencia que el chat, apenas separado del menú */
+        margin-top: 10px;
+        z-index: 5;
+      }
+
+      /* Diferenciador leído / no leído */
+      .notification-item.unread {
+        background: #fff7f4;
+        border-left: 4px solid #c97e63;
+        padding-left: 10px;
+      }
+
+      .notification-item.unread:hover {
+        background: #f3e0d8;
+      }
+
+      .notification-item.unread .notification-item-text > div:first-child {
+        font-weight: 700;
+        color: #c97e63;
+      }
+
+      .notification-item.unread::after {
+        content: "●";
+        font-size: 8px;
+        color: #c97e63;
+        margin-left: 6px;
+        align-self: center;
+      }
+
+      .notification-item.read {
+        opacity: 0.55;
+      }
+
+      /* --------- CHAT --------- */
+      .chat-container {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .bubble {
+        max-width: 80%;
+        padding: 8px 10px;
+        border-radius: 14px;
+        font-size: 14px;
+        line-height: 1.4;
+      }
+
+      .bubble.user {
+        align-self: flex-end;
+        background: #c97e63;
+        color: #fff;
+        border-bottom-right-radius: 2px;
+      }
+
+      .bubble.bot {
+        align-self: flex-start;
+        background: #fff;
+        color: #333;
+        border-bottom-left-radius: 2px;
+      }
+
+      .chat-input-bar {
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
+        background: rgba(247, 244, 239, 0.98);
+        padding: 10px 16px;
+        margin-left: -16px; /* ocupa el ancho completo del área de contenido */
+        margin-right: -16px;
+        border-top: 1px solid #e0d7cf;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      /* Chat: input siempre abajo (sobre el menú inferior) y mensajes con scroll */
+      #screen-chat {
+        height: 100%;
+      }
+
+      #screen-chat.active {
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* El texto introductorio del chat no debe empujar el input */
+      #screen-chat .chat-top {
+        flex: 0 0 auto;
+      }
+
+      /* Mensajes scrollean y dejan espacio para la barra */
+      #screen-chat .chat-container {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        padding-bottom: 78px;
+      }
+
+      /* Barra fija al fondo del área de contenido */
+      #screen-chat .chat-input-bar {
+        position: sticky;
+        bottom: 0;
+      }
+
+      .chat-input {
+        flex: 1;
+        border-radius: 999px;
+        border: 1px solid #d7c8bf;
+        padding: 8px 12px;
+        font-size: 14px;
+        outline: none;
+        background: #fff;
+      }
+
+      .chat-send-btn {
+        border-radius: 999px;
+        border: none;
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+        background: #c97e63;
+        color: #fff;
+        cursor: pointer;
+      }
+
+      /* --------- TEXTAREA --------- */
+      textarea {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid #dcc5bd;
+        padding: 8px 10px;
+        font-size: 14px;
+        resize: none;
+        outline: none;
+        min-height: 70px;
+        background: #fff;
+      }
+
+      /* --------- NAVEGACIÓN INFERIOR --------- */
+      .bottom-nav {
+        height: 60px;
+        border-top: 1px solid #e0d7cf;
+        background: #f7f4ef;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+      }
+
+      .nav-item {
+        flex: 1;
+        text-align: center;
+        font-size: 11px;
+        color: #8a8078;
+        cursor: pointer;
+        padding-top: 6px;
+      }
+
+      .nav-item span.icon {
+        display: block;
+        font-size: 18px;
+        margin-bottom: 2px;
+      }
+
+      .nav-item.active {
+        color: #c97e63;
+        font-weight: 600;
+      }
+
+      /* --------- MODAL DENTRO DE LA APP --------- */
+      .modal-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.35);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 20;
+      }
+
+      .modal {
+        width: 82%;
+        max-width: 320px;
+        background: #fff9f6;
+        border-radius: 20px;
+        padding: 16px 18px 14px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+      }
+
+      .modal-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #444;
+        margin-bottom: 6px;
+      }
+
+      .modal-text {
+        font-size: 14px;
+        color: #555;
+        line-height: 1.4;
+        margin-bottom: 10px;
+      }
+
+      .modal-extra {
+        margin-bottom: 10px;
+      }
+
+      .modal-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        margin-top: 6px;
+      }
+
+      /* Alinear botones del modal (evita que "Cerrar" quede más arriba) */
+      .modal-actions .btn-secondary,
+      .modal-actions .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 36px;
+        line-height: 1;
+        padding: 8px 14px;
+        font-size: 13px;
+        margin-top: 0;
+        width: auto;
+      }
+
+      .btn-secondary {
+        border-radius: 999px;
+        border: none;
+        padding: 8px 14px;
+        font-size: 13px;
+        background: #f3e0d8;
+        color: #444;
+        cursor: pointer;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      /* --------- LOGIN --------- */
+      .auth-wrap {
+        width: 390px;
+        height: 800px;
+        background: #000;
+        border-radius: 32px;
+        padding: 10px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .auth-screen {
+        width: 100%;
+        height: 100%;
+        border-radius: 28px;
+        overflow: hidden;
+        background: #f7f4ef;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+
+      .auth-header {
+        background: #c97e63;
+        color: #fff;
+        padding: 22px 18px 18px;
+      }
+
+      .auth-title {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+
+      .auth-subtitle {
+        font-size: 13px;
+        opacity: 0.95;
+        line-height: 1.4;
+      }
+
+      .auth-content {
+        flex: 1;
+        padding: 18px 16px;
+        overflow-y: auto;
+      }
+
+      .auth-card {
+        background: #fff9f6;
+        border-radius: 16px;
+        padding: 14px;
+        border: 1px solid #e7d8d1;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+      }
+
+      .auth-field {
+        margin-bottom: 10px;
+      }
+
+      .auth-label {
+        display: block;
+        font-size: 13px;
+        margin-bottom: 4px;
+        color: #666;
+      }
+
+      .auth-input {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid #dcc5bd;
+        padding: 10px 10px;
+        font-size: 14px;
+        outline: none;
+        background: #fff;
+      }
+
+      .auth-error {
+        margin-top: 10px;
+        font-size: 12px;
+        color: #a14b3d;
+        background: #fff0ec;
+        border: 1px solid #f0c7bd;
+        padding: 8px 10px;
+        border-radius: 12px;
+        display: none;
+      }
+
+      .auth-switch {
+        margin-top: 10px;
+        text-align: center;
+        font-size: 12px;
+        color: #666;
+      }
+
+      .auth-switch a {
+        color: #c97e63;
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: none;
+      }
+
+      .auth-switch a:hover {
+        text-decoration: underline;
+      }
+
+      .auth-hint {
+        font-size: 12px;
+        color: #777;
+        line-height: 1.35;
+        margin-top: 8px;
+        text-align: center;
+      }
+
+      .auth-divider {
+        margin: 12px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #8a8078;
+        font-size: 12px;
+      }
+
+      .auth-divider::before,
+      .auth-divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #e0d7cf;
+      }
+
+      .auth-social {
+        display: flex;
+        gap: 8px;
+      }
+
+      .auth-social .btn-pill {
+        flex: 1;
+      }
+
+      .modal-field {
+        margin-bottom: 8px;
+      }
+
+      .modal-field label {
+        display: block;
+        font-size: 13px;
+        margin-bottom: 4px;
+        color: #666;
+      }
+
+      .modal-input {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid #dcc5bd;
+        padding: 6px 8px;
+        font-size: 14px;
+        outline: none;
+        background: #fff;
+      }
+
+      /* --------- BOTÓN DE VOZ EN EL CHAT --------- */
+      .chat-voice-btn {
+        border-radius: 999px;
+        border: none;
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+        background: #f3e0d8;
+        color: #444;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* --------- ACCESOS DE EMERGENCIA / LLAMADAS --------- */
+      .quick-actions-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .quick-action {
+        background: #fff;
+        border-radius: 16px;
+        padding: 10px 10px;
+        border: 1px solid #e7d8d1;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .quick-action .qa-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f3e0d8;
+        font-size: 18px;
+        flex: 0 0 36px;
+      }
+
+      .quick-action .qa-text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        flex: 1;
+      }
+
+      .quick-action .qa-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: #444;
+        line-height: 1.15;
+      }
+
+      .quick-action .qa-sub {
+        font-size: 11px;
+        color: #777;
+        line-height: 1.2;
+      }
+
+      .call-btn {
+        border-radius: 999px;
+        border: none;
+        padding: 8px 12px;
+        font-size: 13px;
+        font-weight: 600;
+        background: #c97e63;
+        color: #fff;
+        cursor: pointer;
+        width: 100%;
+      }
+
+      .call-btn.secondary {
+        background: #f3e0d8;
+        color: #444;
+        font-weight: 600;
+      }
+
+      /* --------- LOGIN VISIBILITY FIX --------- */
+      #login-root.hidden {
+        display: none !important;
+      }
+
+      /* --------- BOTONES SOCIALES CON LOGOS --------- */
+      .social-btn {
+        flex: 1;
+        border-radius: 999px;
+        border: 1px solid #e0d7cf;
+        padding: 8px 10px;
+        font-size: 13px;
+        background: #fff;
+        color: #444;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+      }
+
+      .social-btn img {
+        width: 18px;
+        height: 18px;
+      }
+
+      /* --------- MENÚ DESPLEGABLE PERFIL --------- */
+      .profile-menu {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 18px;
+        background: #fff9f6;
+        border-radius: 16px;
+        border: 1px solid #e7d8d1;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        width: 220px;
+        z-index: 50;
+        padding: 8px;
+        display: none;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .profile-menu.active {
+        display: flex;
+      }
+
+      /* Unificar tipografía del menú desplegable */
+      .profile-menu-item {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        padding: 10px 12px;
+        border-radius: 12px;
+        color: #444;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .profile-menu-item:hover {
+        background: #f3e0d8;
+      }
+
+      /* Solo el ícono del menú */
+      .profile-menu-item > span:first-child {
+        font-size: 16px;
+      }
+
+      /* El texto del menú debe heredar el tamaño base */
+      .profile-menu-item .menu-text {
+        font-size: inherit;
+        font-weight: inherit;
+      }
+
+      .menu-text {
+        flex: 1;
+        font-size: inherit;
+        font-weight: inherit;
+      }
+
+      /* Badge contador de notificaciones no leídas */
+      .notif-badge {
+        min-width: 18px;
+        height: 18px;
+        padding: 0 6px;
+        border-radius: 999px;
+        background: #d93025; /* rojo tipo Facebook */
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Badge total en el botón de perfil (banner) */
+      .header-total-badge {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        min-width: 18px;
+        height: 18px;
+        padding: 0 6px;
+        border-radius: 999px;
+        background: #d93025;
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+      }
+      .profile-menu-divider {
+        height: 1px;
+        background: #e0d7cf;
+        margin: 4px 0;
+      }
+      /* Logout en rojo (icono de apagado) */
+      .profile-menu-item.logout {
+        color: #c0392b;
+      }
+
+      .profile-menu-item.logout:hover {
+        background: #fbeaea;
+      }
+
+      .profile-menu-item.logout > span:first-child {
+        color: #c0392b;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- LOGIN (se muestra antes de la app) -->
+    <div id="login-root" class="auth-wrap">
+      <div class="auth-screen">
+        <div class="status-bar">
+          <div>9:41</div>
+          <div>🕊️ 💜 📶 100%</div>
+        </div>
+
+        <div class="auth-header">
+          <div class="auth-title">CuidArte</div>
+          <div class="auth-subtitle">Cuidando a las que cuidan 💜</div>
+        </div>
+
+        <div class="auth-content">
+          <div class="auth-card">
+            <!-- PANEL LOGIN -->
+            <div id="login-panel">
+              <div
+                class="card-title"
+                style="text-align: center; margin-bottom: 10px"
+              >
+                Inicio sesión
+              </div>
+              <div class="auth-field">
+                <label class="auth-label" for="login-email">Correo</label>
+                <input
+                  id="login-email"
+                  class="auth-input"
+                  type="email"
+                  placeholder="ej: cuidarte@gmail.com"
+                  autocomplete="username"
+                />
+              </div>
+
+              <div class="auth-field">
+                <label class="auth-label" for="login-password"
+                  >Contraseña</label
+                >
+                <input
+                  id="login-password"
+                  class="auth-input"
+                  type="password"
+                  placeholder="Tu contraseña"
+                  autocomplete="current-password"
+                />
+              </div>
+
+              <div
+                class="auth-field"
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  margin-top: 2px;
+                "
+              >
+                <input
+                  id="login-remember"
+                  type="checkbox"
+                  style="width: 16px; height: 16px"
+                />
+                <label for="login-remember" class="auth-label" style="margin: 0"
+                  >Recordarme en este dispositivo</label
+                >
+              </div>
+
+              <button class="btn-primary" onclick="handleLogin()">
+                Ingresar
+              </button>
+
+              <div id="login-error" class="auth-error"></div>
+
+              <div class="auth-divider">o continúa con</div>
+
+              <div class="auth-social">
+                <button
+                  class="social-btn"
+                  onclick="handleSocialLogin('Google')"
+                >
+                  <img
+                    src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                    alt="Google"
+                  />
+                  Google
+                </button>
+
+                <button
+                  class="social-btn"
+                  onclick="handleSocialLogin('Facebook')"
+                >
+                  <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg"
+                    alt="Facebook"
+                  />
+                  Facebook
+                </button>
+
+                <button class="social-btn" onclick="handleSocialLogin('Apple')">
+                  <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"
+                    alt="Apple"
+                  />
+                  Apple
+                </button>
+              </div>
+
+              <button
+                class="btn-primary"
+                style="margin-top: 10px; background: #f3e0d8; color: #444"
+                onclick="prefillDemoLogin()"
+              >
+                Usar cuenta demo
+              </button>
+              <div class="auth-switch">
+                ¿No tienes cuenta?
+                <a onclick="showRegisterPanel()">Regístrate</a>
+              </div>
+            </div>
+            <!-- PANEL REGISTRO -->
+            <div id="register-panel" class="hidden">
+              <div
+                class="card-title"
+                style="text-align: center; margin-bottom: 10px"
+              >
+                Crear cuenta
+              </div>
+
+              <div class="auth-field">
+                <label class="auth-label" for="register-name">Nombre</label>
+                <input
+                  id="register-name"
+                  class="auth-input"
+                  type="text"
+                  placeholder="Ej: Ana"
+                  autocomplete="name"
+                />
+              </div>
+
+              <div class="auth-field">
+                <label class="auth-label" for="register-email">Correo</label>
+                <input
+                  id="register-email"
+                  class="auth-input"
+                  type="email"
+                  placeholder="Ej: ana@gmail.com"
+                  autocomplete="email"
+                />
+              </div>
+
+              <div class="auth-field">
+                <label class="auth-label" for="register-password"
+                  >Contraseña</label
+                >
+                <input
+                  id="register-password"
+                  class="auth-input"
+                  type="password"
+                  placeholder="Crea una contraseña"
+                  autocomplete="new-password"
+                />
+              </div>
+
+              <div class="auth-field">
+                <label class="auth-label" for="register-password2"
+                  >Repetir contraseña</label
+                >
+                <input
+                  id="register-password2"
+                  class="auth-input"
+                  type="password"
+                  placeholder="Repite tu contraseña"
+                  autocomplete="new-password"
+                />
+              </div>
+
+              <button class="btn-primary" onclick="handleRegister()">
+                Crear cuenta
+              </button>
+
+              <div id="register-error" class="auth-error"></div>
+
+              <div class="auth-hint">
+                Tus datos se guardan <b>solo en este dispositivo</b> (modo
+                demo).<br />
+                Si borras el navegador, la cuenta se perderá.
+              </div>
+
+              <div class="auth-switch">
+                ¿Ya tienes cuenta?
+                <a onclick="showLoginPanel()">Inicia sesión</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- APP (oculta hasta login correcto) -->
+    <div id="app-root" class="hidden">
+      <div class="phone-frame">
+        <div class="phone-screen">
+          <!-- Barra de estado simulada -->
+          <div class="status-bar">
+            <div>9:41</div>
+            <div>🕊️ 💜 📶 100%</div>
+          </div>
+
+          <!-- HEADER -->
+          <div class="header">
+            <div class="header-row">
+              <div>
+                <div class="header-title">CuidArte</div>
+                <div class="header-subtitle">Cuidando a las que cuidan 💜</div>
+              </div>
+
+              <div class="header-actions">
+                <button
+                  class="header-profile-btn"
+                  onclick="toggleProfileMenu(event)"
+                  aria-label="Perfil"
+                  title="Perfil"
+                >
+                  <span id="header-profile-initial">A</span>
+                  <span
+                    id="header-total-badge"
+                    class="header-total-badge hidden"
+                    >0</span
+                  >
+                </button>
+              </div>
+            </div>
+            <!-- MENÚ PERFIL -->
+            <div
+              id="profile-menu"
+              class="profile-menu"
+              onclick="event.stopPropagation()"
+            >
+              <div class="profile-menu-item" onclick="showScreen('profile')">
+                <span>👤</span> Mi perfil
+              </div>
+              <div class="profile-menu-item" onclick="showScreen('diary')">
+                <span>📓</span> Mi diario
+              </div>
+              <div class="profile-menu-item" onclick="showScreen('reminders')">
+                <span>⏰</span>
+                <span class="menu-text">Recordatorios</span>
+                <span id="reminders-badge" class="notif-badge hidden">0</span>
+              </div>
+              <div
+                class="profile-menu-item"
+                onclick="showScreen('notifications')"
+              >
+                <span>🔔</span>
+                <span class="menu-text">Notificaciones</span>
+                <span id="notif-badge" class="notif-badge hidden">0</span>
+              </div>
+              <div class="profile-menu-item" onclick="showScreen('settings')">
+                <span>⚙️</span> Configuración
+              </div>
+              <div class="profile-menu-divider"></div>
+              <div class="profile-menu-item logout" onclick="logout()">
+                <span>⏻</span>
+                <span class="menu-text">Cerrar sesión</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONTENIDO -->
+          <div class="content">
+            <!-- NOTIFICACIONES (SECCIÓN DEDICADA) -->
+            <div id="screen-notifications" class="screen">
+              <div class="section-title">Notificaciones</div>
+              <div class="card-text small" style="margin-bottom: 8px">
+                Tus avisos importantes y recordatorios, en un solo lugar.
+              </div>
+
+              <div class="card light">
+                <ul id="notifications-feed" class="notification-list"></ul>
+              </div>
+
+              <button
+                class="btn-primary mark-read-btn"
+                onclick="markAllNotificationsRead()"
+              >
+                Marcar todas como leídas
+              </button>
+            </div>
+
+            <!-- PERFIL -->
+            <div id="screen-profile" class="screen">
+              <div class="section-title">Mi perfil</div>
+              <div class="card-text small" style="margin-bottom: 8px">
+                Tu espacio personal dentro de CuidArte.
+              </div>
+
+              <div class="profile-card" style="margin-top: 0">
+                <div class="profile-avatar" id="profile-avatar">A</div>
+
+                <div class="profile-info">
+                  <div class="profile-name" id="profile-name">Ana</div>
+                  <div class="profile-email" id="profile-email">
+                    cuidarte@gmail.com
+                  </div>
+                </div>
+
+                <div class="profile-actions">
+                  <button
+                    class="profile-logout-btn secondary"
+                    onclick="logout()"
+                  >
+                    Salir
+                  </button>
+                </div>
+              </div>
+
+              <div class="card light" style="margin-top: 14px">
+                <div class="card-title">Accesos rápidos</div>
+                <div class="list">
+                  <div class="list-item" onclick="showScreen('notifications')">
+                    <div class="list-item-title">🔔 Notificaciones</div>
+                    <div class="list-item-time">
+                      Ver tus avisos y recordatorios
+                    </div>
+                  </div>
+
+                  <div class="list-item" onclick="showScreen('reminders')">
+                    <div class="list-item-title">⏰ Recordatorios</div>
+                    <div class="list-item-time">Ajusta tus pausas del día</div>
+                  </div>
+
+                  <div class="list-item" onclick="showScreen('diary')">
+                    <div class="list-item-title">📝 Mi diario</div>
+                    <div class="list-item-time">
+                      Escribe y guarda tu entrada
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                class="btn-primary"
+                style="margin-top: 12px; background: #f3e0d8; color: #444"
+                onclick="showScreen('home')"
+              >
+                Volver al inicio
+              </button>
+            </div>
+
+            <!-- INICIO -->
+            <div id="screen-home" class="screen active">
+              <div class="card">
+                <div class="card-title" id="home-greeting">Hola, Ana</div>
+                <div class="card-text small">
+                  Antes de seguir cuidando a los demás, te pregunto a ti:
+                </div>
+                <div class="section-title" style="margin-top: 10px">
+                  ¿Cómo te sientes ahora mismo?
+                </div>
+                <div class="btn-row" style="margin-top: 6px">
+                  <button class="btn-pill">
+                    <span class="emoji">😟</span>Mal
+                  </button>
+                  <button class="btn-pill">
+                    <span class="emoji">😐</span>Regular
+                  </button>
+                  <button class="btn-pill">
+                    <span class="emoji">🙂</span>Bien
+                  </button>
+                  <button class="btn-pill">
+                    <span class="emoji">💛</span>Agradecida
+                  </button>
+                </div>
+              </div>
+
+              <div class="card light">
+                <div class="card-title">Próximo recordatorio</div>
+                <div class="card-text small">
+                  🕒 11:00 — Tomar agua y sentarte 3 minutos sin hacer nada.
+                </div>
+              </div>
+
+              <div class="card light">
+                <div class="card-title">Sugerencia de hoy</div>
+                <div class="card-text small">
+                  Haz una pausa de 1 minuto para respirar y sentir tus pies en
+                  el suelo. No soluciona todo, pero tu cuerpo lo agradece.
+                </div>
+                <button class="btn-primary" onclick="startGuidedPause()">
+                  Hacer una pausa guiada
+                </button>
+              </div>
+
+              <div class="card light">
+                <div class="card-title">Ayuda rápida</div>
+                <div class="card-text small">
+                  Accesos directos para pedir ayuda, coordinar traslado o llamar
+                  a servicios de urgencia.
+                </div>
+                <button
+                  class="btn-primary"
+                  style="margin-top: 10px"
+                  onclick="showScreen('help')"
+                >
+                  Abrir teléfonos y movilización
+                </button>
+              </div>
+            </div>
+
+            <!-- HABLAR / CHAT -->
+            <div id="screen-chat" class="screen">
+              <div class="chat-top">
+                <div class="section-title">Hablar con CuidArte</div>
+                <div class="card-text small" style="margin-bottom: 8px">
+                  Aquí puedes desahogarte. No te juzgo, solo te acompaño.
+                </div>
+              </div>
+
+              <div class="chat-container" id="chat-container">
+                <div class="bubble user">No doy más hoy, estoy agotada.</div>
+                <div class="bubble bot">
+                  Siento que te sientas así. Es comprensible con todo lo que
+                  haces cada día. Antes de seguir, te propongo que respiremos
+                  juntas unos segundos.
+                </div>
+              </div>
+
+              <div class="chat-input-bar">
+                <button class="chat-voice-btn" onclick="toggleVoiceMode()">
+                  🎙️
+                </button>
+                <input
+                  type="text"
+                  id="chat-input"
+                  class="chat-input"
+                  placeholder="Escríbeme lo que quieras..."
+                />
+                <button class="chat-send-btn" onclick="sendMessage()">➤</button>
+              </div>
+            </div>
+
+            <!-- DIARIO -->
+            <div id="screen-diary" class="screen">
+              <div class="section-title">Diario de hoy</div>
+              <div class="card-text small" style="margin-bottom: 6px">
+                No tiene que ser perfecto. Solo es para ti.
+              </div>
+
+              <div class="chip-row">
+                <div class="chip">🌧️ Triste</div>
+                <div class="chip">🌪️ Agotada</div>
+                <div class="chip">💛 Agradecida</div>
+                <div class="chip">😔 Culpa</div>
+                <div class="chip">🌻 Calma</div>
+              </div>
+
+              <textarea
+                placeholder="Si quieres, cuéntame cómo fue tu día..."
+              ></textarea>
+              <button
+                class="btn-primary"
+                style="margin-top: 10px"
+                onclick="saveDiaryEntry()"
+              >
+                Guardar entrada de hoy
+              </button>
+
+              <div class="section-title" style="margin-top: 16px">
+                Entradas recientes
+              </div>
+              <div class="list">
+                <div class="list-item">
+                  <div class="list-item-title">Ayer</div>
+                  <div class="list-item-time">
+                    “Me sentí cansada, pero logré pedir ayuda a mi hermana.”
+                  </div>
+                </div>
+                <div class="list-item">
+                  <div class="list-item-title">30 Nov</div>
+                  <div class="list-item-time">
+                    “Día muy difícil. Me costó dormir.”
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- RECORDATORIOS -->
+            <div id="screen-reminders" class="screen">
+              <div class="section-title">Mis pausas y recordatorios</div>
+              <div class="card-text small">
+                Pequeños momentos para ti durante el día. No son egoísmo, son
+                cuidado.
+              </div>
+
+              <div class="list" style="margin-top: 10px">
+                <div class="list-item">
+                  <div class="list-item-title">10:30 — Tomar agua</div>
+                  <div class="list-item-time">Activa · Todos los días</div>
+                </div>
+                <div class="list-item">
+                  <div class="list-item-title">
+                    14:00 — Respiración 1 minuto
+                  </div>
+                  <div class="list-item-time">Activa · Lunes a viernes</div>
+                </div>
+                <div class="list-item">
+                  <div class="list-item-title">
+                    19:30 — Pausa de 5 minutos para ti
+                  </div>
+                  <div class="list-item-time">
+                    Activa · Horario crítico de la tarde
+                  </div>
+                </div>
+              </div>
+
+              <button
+                class="btn-primary"
+                style="margin-top: 12px"
+                onclick="addPause()"
+              >
+                Agregar nueva pausa
+              </button>
+
+              <div class="card light" style="margin-top: 14px">
+                <div class="card-title">Consejo</div>
+                <div class="card-text small">
+                  Empieza con una sola pausa al día. Es mejor algo pequeño,
+                  constante, que una gran intención que nunca ocurre.
+                </div>
+              </div>
+            </div>
+
+            <!-- FORO / COMUNIDAD -->
+            <div id="screen-forum" class="screen">
+              <div class="section-title">Foro de la comunidad</div>
+              <div class="card-text small" style="margin-bottom: 8px">
+                Un espacio seguro para compartir, leer y acompañarnos entre
+                todas 💜
+              </div>
+
+              <div class="card light">
+                <div class="card-title">Crear nueva publicación</div>
+                <textarea
+                  id="forum-new-post"
+                  placeholder="Comparte algo con la comunidad..."
+                ></textarea>
+                <button
+                  class="btn-primary"
+                  style="margin-top: 8px"
+                  onclick="addForumPost()"
+                >
+                  Publicar
+                </button>
+              </div>
+
+              <div class="section-title" style="margin-top: 16px">
+                Publicaciones recientes
+              </div>
+              <div id="forum-list" class="list">
+                <div class="list-item">
+                  <div class="list-item-title">María · Hoy</div>
+                  <div class="list-item-time">
+                    Hoy me sentí muy cansada, gracias por este espacio 💛
+                  </div>
+                </div>
+                <div class="list-item">
+                  <div class="list-item-title">Claudia · Ayer</div>
+                  <div class="list-item-time">
+                    Recordatorio: pedir ayuda también es cuidarse.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- CONFIGURACIÓN -->
+            <div id="screen-settings" class="screen">
+              <div class="section-title">Configuración</div>
+              <div class="card-text small" style="margin-bottom: 8px">
+                Ajusta cómo funciona CuidArte para ti.
+              </div>
+
+              <div class="card light">
+                <div class="card-title">Preferencias</div>
+
+                <div class="list">
+                  <div class="list-item">
+                    <div class="list-item-title">🔔 Notificaciones</div>
+                    <div class="list-item-time">
+                      <label>
+                        <input
+                          type="checkbox"
+                          id="settings-notifications"
+                          checked
+                        />
+                        Activar notificaciones internas
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="list-item">
+                    <div class="list-item-title">⏰ Recordatorios</div>
+                    <div class="list-item-time">
+                      <label>
+                        <input
+                          type="checkbox"
+                          id="settings-reminders"
+                          checked
+                        />
+                        Mostrar recordatorios diarios
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="list-item">
+                    <div class="list-item-title">🎙️ Asistente por voz</div>
+                    <div class="list-item-time">
+                      <label>
+                        <input type="checkbox" id="settings-voice" />
+                        Habilitar modo voz (demo)
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card light">
+                <div class="card-title">Cuenta</div>
+
+                <div class="list">
+                  <div class="list-item" onclick="showScreen('profile')">
+                    <div class="list-item-title">👤 Mi perfil</div>
+                    <div class="list-item-time">Ver y revisar mis datos</div>
+                  </div>
+
+                  <div class="list-item" onclick="logout()">
+                    <div class="list-item-title" style="color: #c0392b">
+                      ⏻ Cerrar sesión
+                    </div>
+                    <div class="list-item-time">Salir de CuidArte</div>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                class="btn-primary"
+                style="margin-top: 12px; background: #f3e0d8; color: #444"
+                onclick="showScreen('home')"
+              >
+                Volver al inicio
+              </button>
+            </div>
+            <!-- AYUDA / EMERGENCIA -->
+            <div id="screen-help" class="screen">
+              <div class="section-title">Teléfonos y movilización</div>
+              <div class="card-text small" style="margin-bottom: 8px">
+                Si necesitas ayuda rápida, aquí tienes accesos directos para
+                llamar o coordinar transporte.
+              </div>
+
+              <div class="card light">
+                <div class="card-title">Servicios frecuentes</div>
+                <div class="quick-actions-grid">
+                  <div class="quick-action" onclick="callNumber('131')">
+                    <div class="qa-icon">🚑</div>
+                    <div class="qa-text">
+                      <div class="qa-title">Ambulancia (SAMU)</div>
+                      <div class="qa-sub">Marcar 131</div>
+                    </div>
+                  </div>
+
+                  <div class="quick-action" onclick="callNumber('132')">
+                    <div class="qa-icon">🚒</div>
+                    <div class="qa-text">
+                      <div class="qa-title">Bomberos</div>
+                      <div class="qa-sub">Marcar 132</div>
+                    </div>
+                  </div>
+
+                  <div class="quick-action" onclick="callNumber('133')">
+                    <div class="qa-icon">🚓</div>
+                    <div class="qa-text">
+                      <div class="qa-title">Carabineros</div>
+                      <div class="qa-sub">Marcar 133</div>
+                    </div>
+                  </div>
+
+                  <div class="quick-action" onclick="callNumber('134')">
+                    <div class="qa-icon">🕵️</div>
+                    <div class="qa-text">
+                      <div class="qa-title">PDI</div>
+                      <div class="qa-sub">Marcar 134</div>
+                    </div>
+                  </div>
+
+                  <div class="quick-action" onclick="callNumber('6003607777')">
+                    <div class="qa-icon">🩺</div>
+                    <div class="qa-text">
+                      <div class="qa-title">Salud Responde</div>
+                      <div class="qa-sub">600 360 7777</div>
+                    </div>
+                  </div>
+
+                  <div class="quick-action" onclick="openTransportModal()">
+                    <div class="qa-icon">🚗</div>
+                    <div class="qa-text">
+                      <div class="qa-title">Movilización</div>
+                      <div class="qa-sub">Uber · Taxi · Vehículo</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card light">
+                <div class="card-title">Favoritos</div>
+                <div class="card-text small">
+                  Guarda contactos importantes para llamarlos con un toque.
+                </div>
+
+                <button
+                  class="btn-primary"
+                  style="margin-top: 10px"
+                  onclick="openAddFavoriteContact()"
+                >
+                  Agregar favorito
+                </button>
+
+                <div class="section-title" style="margin-top: 14px">
+                  Mis favoritos
+                </div>
+                <div id="favorite-contacts-list" class="list"></div>
+
+                <button
+                  class="call-btn secondary"
+                  style="margin-top: 10px"
+                  onclick="seedExampleFavorites()"
+                >
+                  Cargar ejemplos (demo)
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- NAV INFERIOR -->
+          <div class="bottom-nav">
+            <div
+              class="nav-item active"
+              onclick="showScreen('home')"
+              id="nav-home"
+            >
+              <span class="icon">🏠</span>
+              Inicio
+            </div>
+            <div class="nav-item" onclick="showScreen('chat')" id="nav-chat">
+              <span class="icon">💬</span>
+              Hablar
+            </div>
+            <div class="nav-item" onclick="showScreen('diary')" id="nav-diary">
+              <span class="icon">📝</span>
+              Diario
+            </div>
+            <!-- <div
+              class="nav-item"
+              onclick="showScreen('reminders')"
+              id="nav-reminders"
+            >
+              <span class="icon">⏰</span>
+              Recordar
+            </div>
+            <div
+              class="nav-item"
+              onclick="showScreen('notifications')"
+              id="nav-notifications"
+            >
+              <span class="icon">🔔</span>
+              Notificaciones
+            </div> -->
+            <div class="nav-item" onclick="showScreen('forum')" id="nav-forum">
+              <span class="icon">👥</span>
+              Foro
+            </div>
+            <div class="nav-item" onclick="showScreen('help')" id="nav-help">
+              <span class="icon">🚑</span>
+              Ayuda
+            </div>
+          </div>
+
+          <!-- Modal genérico dentro de la app -->
+          <div id="modal-overlay" class="modal-overlay hidden">
+            <div class="modal">
+              <div id="modal-title" class="modal-title">Título</div>
+              <div id="modal-text" class="modal-text">
+                Contenido del mensaje.
+              </div>
+              <div id="modal-extra" class="modal-extra"></div>
+              <div class="modal-actions">
+                <button id="modal-secondary-btn" class="btn-secondary">
+                  Cerrar
+                </button>
+                <button id="modal-primary-btn" class="btn-primary">
+                  Aceptar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Utilidades para el modal interno
+      function openModal(config) {
+        const overlay = document.getElementById("modal-overlay");
+        const titleEl = document.getElementById("modal-title");
+        const textEl = document.getElementById("modal-text");
+        const extraEl = document.getElementById("modal-extra");
+        const primaryBtn = document.getElementById("modal-primary-btn");
+        const secondaryBtn = document.getElementById("modal-secondary-btn");
+
+        titleEl.textContent = config.title || "";
+        textEl.textContent = config.text || "";
+        extraEl.innerHTML = config.extraHtml || "";
+
+        // Mostrar/ocultar botones según corresponda
+        if (config.primaryLabel === null) {
+          primaryBtn.style.display = "none";
+        } else {
+          primaryBtn.style.display = "inline-flex";
+          primaryBtn.textContent = config.primaryLabel || "Aceptar";
+        }
+
+        if (config.secondaryLabel === null) {
+          secondaryBtn.style.display = "none";
+        } else {
+          secondaryBtn.style.display = "inline-flex";
+          secondaryBtn.textContent = config.secondaryLabel || "Cerrar";
+        }
+
+        // Quitar handlers previos
+        primaryBtn.onclick = null;
+        secondaryBtn.onclick = null;
+
+        primaryBtn.onclick = () => {
+          if (typeof config.onPrimary === "function") {
+            config.onPrimary();
+          }
+        };
+
+        secondaryBtn.onclick = () => {
+          if (typeof config.onSecondary === "function") {
+            config.onSecondary();
+          }
+          closeModal();
+        };
+
+        overlay.classList.remove("hidden");
+      }
+
+      function closeModal() {
+        const overlay = document.getElementById("modal-overlay");
+        overlay.classList.add("hidden");
+      }
+
+      // ------------------ AUTH / LOGIN (DEMO) ------------------
+      const DEMO_USER = {
+        email: "cuidarte@gmail.com",
+        password: "password",
+      };
+
+      function initAuth() {
+        const isLogged = localStorage.getItem("cuidarte_logged_in") === "1";
+        const remember = localStorage.getItem("cuidarte_remember") === "1";
+
+        // Mostrar login por defecto (demo). Solo saltar login si "Recordarme" está activado.
+        if (isLogged && remember) {
+          bootApp();
+        } else {
+          showLogin();
+        }
+
+        // Permitir Enter para iniciar sesión
+        const emailEl = document.getElementById("login-email");
+        const passEl = document.getElementById("login-password");
+        if (emailEl && passEl) {
+          [emailEl, passEl].forEach((el) => {
+            el.addEventListener("keydown", (e) => {
+              if (e.key === "Enter") handleLogin();
+            });
+          });
+        }
+      }
+
+      function showLogin() {
+        const loginRoot = document.getElementById("login-root");
+        const appRoot = document.getElementById("app-root");
+        if (loginRoot) {
+          loginRoot.classList.remove("hidden");
+          loginRoot.style.display = "flex";
+          setLoginError("");
+          showLoginPanel();
+        }
+        if (appRoot) {
+          appRoot.classList.add("hidden");
+          appRoot.style.display = "none";
+        }
+      }
+
+      function bootApp() {
+        const loginRoot = document.getElementById("login-root");
+        const appRoot = document.getElementById("app-root");
+        if (loginRoot) {
+          loginRoot.classList.add("hidden");
+          loginRoot.style.display = "none";
+        }
+        if (appRoot) {
+          appRoot.classList.remove("hidden");
+          appRoot.style.display = "block";
+        }
+
+        // Asegurar que parta en Inicio
+        showScreen("home");
+
+        // Iniciar panel de notificaciones internas
+        startNotificationPanel();
+
+        // Cargar favoritos (si existen)
+        renderFavoriteContacts();
+        // Aquí podría cargarse el nombre/avatar real de la usuaria desde backend o storage
+
+        updateAllBadges();
+        applyUserProfile();
+      }
+
+      function prefillDemoLogin() {
+        const emailEl = document.getElementById("login-email");
+        const passEl = document.getElementById("login-password");
+        if (emailEl) emailEl.value = DEMO_USER.email;
+        if (passEl) passEl.value = DEMO_USER.password;
+      }
+
+      function setLoginError(msg) {
+        const err = document.getElementById("login-error");
+        if (!err) return;
+        if (!msg) {
+          err.style.display = "none";
+          err.textContent = "";
+        } else {
+          err.style.display = "block";
+          err.textContent = msg;
+        }
+      }
+
+      function handleLogin() {
+        const email = (
+          document.getElementById("login-email")?.value || ""
+        ).trim();
+        const password = (
+          document.getElementById("login-password")?.value || ""
+        ).trim();
+
+        setLoginError("");
+
+        if (!email || !password) {
+          setLoginError("Ingresa correo y contraseña.");
+          return;
+        }
+
+        // Permitir login con cuenta demo o cuentas locales
+        const isDemo =
+          email.toLowerCase() === DEMO_USER.email.toLowerCase() &&
+          password === DEMO_USER.password;
+
+        const storedUser = findUserByEmail(email);
+        const isLocal = storedUser && storedUser.password === password;
+
+        if (!isDemo && !isLocal) {
+          setLoginError(
+            "Credenciales incorrectas. Puedes usar la cuenta demo o registrarte en este dispositivo."
+          );
+          return;
+        }
+
+        // Guardar perfil actual
+        try {
+          if (isLocal) {
+            localStorage.setItem(
+              "cuidarte_user_name",
+              storedUser.name || "Ana"
+            );
+            localStorage.setItem(
+              "cuidarte_user_email",
+              storedUser.email || email
+            );
+          } else {
+            localStorage.setItem("cuidarte_user_name", "Ana");
+            localStorage.setItem("cuidarte_user_email", DEMO_USER.email);
+          }
+        } catch (e) {}
+
+        const rememberEl = document.getElementById("login-remember");
+        const remember = rememberEl ? rememberEl.checked : false;
+
+        localStorage.setItem("cuidarte_logged_in", "1");
+        localStorage.setItem("cuidarte_remember", remember ? "1" : "0");
+        applyUserProfile();
+        bootApp();
+      }
+
+      function handleSocialLogin(provider) {
+        // Login social simulado con logos oficiales (modo demo)
+        // Simulación (en una app real aquí iría OAuth)
+        localStorage.setItem("cuidarte_logged_in", "1");
+        localStorage.setItem("cuidarte_remember", "1");
+        bootApp();
+
+        // Mostrar aviso dentro de la app ya cargada
+        openModal({
+          title: "Inicio con RRSS",
+          text:
+            "Has iniciado sesión con " +
+            provider +
+            " (modo demo). En una app real esto se conectaría a OAuth.",
+          primaryLabel: null,
+          secondaryLabel: "Cerrar",
+          onPrimary: null,
+          onSecondary: null,
+          extraHtml: "",
+        });
+      }
+
+      function logout() {
+        localStorage.removeItem("cuidarte_logged_in");
+        localStorage.removeItem("cuidarte_remember");
+        closeModal();
+        showLogin();
+      }
+
+      // ------------------ USERS (LOCAL STORAGE) ------------------
+      const USERS_KEY = "cuidarte_users";
+
+      function getStoredUsers() {
+        try {
+          const raw = localStorage.getItem(USERS_KEY);
+          const parsed = raw ? JSON.parse(raw) : [];
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function setStoredUsers(users) {
+        try {
+          localStorage.setItem(USERS_KEY, JSON.stringify(users || []));
+        } catch (e) {}
+      }
+
+      function normalizeEmail(email) {
+        return String(email || "")
+          .trim()
+          .toLowerCase();
+      }
+
+      function findUserByEmail(email) {
+        const users = getStoredUsers();
+        const e = normalizeEmail(email);
+        return users.find((u) => normalizeEmail(u.email) === e) || null;
+      }
+
+      function setRegisterError(msg) {
+        const err = document.getElementById("register-error");
+        if (!err) return;
+        if (!msg) {
+          err.style.display = "none";
+          err.textContent = "";
+        } else {
+          err.style.display = "block";
+          err.textContent = msg;
+        }
+      }
+
+      function showRegisterPanel() {
+        const loginPanel = document.getElementById("login-panel");
+        const regPanel = document.getElementById("register-panel");
+        if (loginPanel) loginPanel.classList.add("hidden");
+        if (regPanel) regPanel.classList.remove("hidden");
+        setLoginError("");
+        setRegisterError("");
+      }
+
+      function showLoginPanel() {
+        const loginPanel = document.getElementById("login-panel");
+        const regPanel = document.getElementById("register-panel");
+        if (regPanel) regPanel.classList.add("hidden");
+        if (loginPanel) loginPanel.classList.remove("hidden");
+        setLoginError("");
+        setRegisterError("");
+      }
+
+      function handleRegister() {
+        const name = (
+          document.getElementById("register-name")?.value || ""
+        ).trim();
+        const email = normalizeEmail(
+          document.getElementById("register-email")?.value || ""
+        );
+        const p1 = (
+          document.getElementById("register-password")?.value || ""
+        ).trim();
+        const p2 = (
+          document.getElementById("register-password2")?.value || ""
+        ).trim();
+
+        setRegisterError("");
+
+        if (!name || !email || !p1 || !p2) {
+          setRegisterError("Completa todos los campos para crear tu cuenta.");
+          return;
+        }
+
+        if (!email.includes("@") || email.length < 6) {
+          setRegisterError("Ingresa un correo válido.");
+          return;
+        }
+
+        if (p1.length < 6) {
+          setRegisterError("La contraseña debe tener al menos 6 caracteres.");
+          return;
+        }
+
+        if (p1 !== p2) {
+          setRegisterError("Las contraseñas no coinciden.");
+          return;
+        }
+
+        if (findUserByEmail(email)) {
+          setRegisterError(
+            "Ya existe una cuenta con ese correo en este dispositivo."
+          );
+          return;
+        }
+
+        const users = getStoredUsers();
+        users.push({ name, email, password: p1, createdAt: Date.now() });
+        setStoredUsers(users);
+
+        // Prellenar login y volver al panel
+        const emailEl = document.getElementById("login-email");
+        const passEl = document.getElementById("login-password");
+        if (emailEl) emailEl.value = email;
+        if (passEl) passEl.value = p1;
+
+        showLoginPanel();
+        setRegisterError("");
+        setLoginError("");
+
+        // Opcional: aviso
+        openModal({
+          title: "Cuenta creada",
+          text: "Tu cuenta se guardó en este dispositivo (modo demo). Ya puedes iniciar sesión.",
+          primaryLabel: null,
+          secondaryLabel: "Cerrar",
+          onPrimary: null,
+          onSecondary: null,
+          extraHtml: "",
+        });
+      }
+      // function openProfileModal() {
+      //   // Ya no se utiliza: el menú perfil ahora es desplegable.
+      // }
+      // ------------------ /AUTH ------------------
+
+      // Inicializar comportamiento de chips y otros elementos
+      document.addEventListener("DOMContentLoaded", () => {
+        // Selección de estado de ánimo en el diario
+        const chips = document.querySelectorAll(".chip");
+        chips.forEach((chip) => {
+          chip.addEventListener("click", () => {
+            chips.forEach((c) => c.classList.remove("selected"));
+            chip.classList.add("selected");
+          });
+        });
+
+        // Inicializar login (la app se muestra sólo si hay sesión)
+        initAuth();
+      });
+
+      // Cambiar entre pantallas (tabs)
+      function showScreen(screen) {
+        // cerrar menú perfil si está abierto
+        const menu = document.getElementById("profile-menu");
+        if (menu) menu.classList.remove("active");
+
+        const screens = [
+          "home",
+          "chat",
+          "diary",
+          "reminders",
+          "notifications",
+          "profile",
+          "forum",
+          "settings",
+          "help",
+        ];
+
+        screens.forEach((name) => {
+          const screenEl = document.getElementById("screen-" + name);
+          const navEl = document.getElementById("nav-" + name);
+
+          if (screenEl) {
+            if (name === screen) screenEl.classList.add("active");
+            else screenEl.classList.remove("active");
+          }
+
+          if (navEl) {
+            if (name === screen) navEl.classList.add("active");
+            else navEl.classList.remove("active");
+          }
+        });
+
+        updateAllBadges();
+      }
+
+      // Panel de notificaciones: recordatorios importantes (interactivos)
+      const notificationMessages = [
+        {
+          text: "Regálate 3 respiraciones profundas antes de seguir.",
+          action: "openPause",
+        },
+        {
+          text: "Revisa cómo te sientes hoy y anótalo en tu diario.",
+          action: "openDiary",
+        },
+        {
+          text: "Hidrátate: un vaso de agua también es cuidado para ti.",
+          action: "openWater",
+        },
+        {
+          text: "Mira tus pausas programadas y ajusta si tu día cambió.",
+          action: "openReminders",
+        },
+        {
+          text: "Aunque cuides a otros, tú también mereces descansar.",
+          action: "openChat",
+        },
+      ];
+      let notificationIndex = 0;
+
+      function startNotificationPanel() {
+        // Mostrar una notificación al inicio
+        addNotificationItem(notificationMessages[notificationIndex]);
+        notificationIndex =
+          (notificationIndex + 1) % notificationMessages.length;
+
+        // Cada cierto tiempo agregar nuevas notificaciones al panel (ej. cada 30 segundos)
+        setInterval(() => {
+          addNotificationItem(notificationMessages[notificationIndex]);
+          notificationIndex =
+            (notificationIndex + 1) % notificationMessages.length;
+        }, 30000);
+      }
+
+      function addNotificationItem(notification) {
+        const list = document.getElementById("notifications-feed");
+        if (!list || !notification) return;
+
+        const li = document.createElement("li");
+        li.className = "notification-item unread";
+
+        const textWrap = document.createElement("div");
+        textWrap.className = "notification-item-text";
+
+        const main = document.createElement("div");
+        main.textContent = notification.text;
+
+        const time = document.createElement("div");
+        time.className = "notification-item-time";
+        const now = new Date();
+        time.textContent = now.toLocaleTimeString("es-ES", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+
+        textWrap.appendChild(main);
+        textWrap.appendChild(time);
+
+        li.appendChild(textWrap);
+
+        // Hacer la notificación interactiva
+        li.addEventListener("click", () => {
+          markNotificationRead(li);
+          handleNotificationAction(notification.action);
+        });
+
+        // Insertar al inicio para que lo más nuevo quede arriba
+        if (list.firstChild) {
+          list.insertBefore(li, list.firstChild);
+        } else {
+          list.appendChild(li);
+        }
+
+        // Limitar el número de notificaciones visibles (por ejemplo, 6)
+        // while (list.children.length > 6) {
+        //   list.removeChild(list.lastChild);
+        // }
+
+        updateNotificationBadge();
+
+        updateHeaderTotalBadge();
+      }
+
+      function markNotificationRead(li) {
+        if (!li) return;
+        li.classList.remove("unread");
+        li.classList.add("read");
+        updateNotificationBadge();
+        updateHeaderTotalBadge();
+      }
+
+      function markAllNotificationsRead() {
+        const list = document.getElementById("notifications-feed");
+        if (!list) return;
+
+        if (!list.children.length) {
+          openModal({
+            title: "Sin notificaciones",
+            text: "No tienes notificaciones nuevas por ahora.",
+            primaryLabel: null,
+            secondaryLabel: "Cerrar",
+            onPrimary: null,
+            onSecondary: null,
+            extraHtml: "",
+          });
+          return;
+        }
+
+        Array.from(list.children).forEach((li) => {
+          markNotificationRead(li);
+        });
+
+        updateNotificationBadge();
+        updateHeaderTotalBadge();
+
+        openModal({
+          title: "Listo",
+          text: "Marcaste todas las notificaciones como leídas.",
+          primaryLabel: null,
+          secondaryLabel: "Cerrar",
+          onPrimary: null,
+          onSecondary: null,
+          extraHtml: "",
+        });
+      }
+
+      // Badge de notificaciones no leídas
+      function updateNotificationBadge() {
+        const badge = document.getElementById("notif-badge");
+        const list = document.getElementById("notifications-feed");
+        if (!badge || !list) return;
+
+        const unread = list.querySelectorAll(
+          ".notification-item.unread"
+        ).length;
+
+        if (unread > 0) {
+          badge.textContent = unread;
+          badge.classList.remove("hidden");
+        } else {
+          badge.classList.add("hidden");
+        }
+      }
+      // Badge de recordatorios (cantidad de pausas/recordatorios)
+      function getRemindersCount() {
+        const list = document.querySelector("#screen-reminders .list");
+        if (!list) return 0;
+        return list.querySelectorAll(".list-item").length;
+      }
+
+      function updateRemindersBadge() {
+        const badge = document.getElementById("reminders-badge");
+        if (!badge) return;
+
+        const count = getRemindersCount();
+        if (count > 0) {
+          badge.textContent = count;
+          badge.classList.remove("hidden");
+        } else {
+          badge.classList.add("hidden");
+        }
+      }
+
+      // Notificaciones no leídas
+      function getUnreadNotificationsCount() {
+        const list = document.getElementById("notifications-feed");
+        if (!list) return 0;
+        return list.querySelectorAll(".notification-item.unread").length;
+      }
+
+      // Total en la A = no leídas + recordatorios
+      function updateHeaderTotalBadge() {
+        const badge = document.getElementById("header-total-badge");
+        if (!badge) return;
+
+        const total = getUnreadNotificationsCount() + getRemindersCount();
+
+        if (total > 0) {
+          badge.textContent = total;
+          badge.classList.remove("hidden");
+        } else {
+          badge.classList.add("hidden");
+        }
+      }
+
+      function updateAllBadges() {
+        updateNotificationBadge();
+        updateRemindersBadge();
+        updateHeaderTotalBadge();
+      }
+
+      // Acciones al hacer clic en una notificación
+      function handleNotificationAction(action) {
+        switch (action) {
+          case "openPause":
+            // Abrir la pausa guiada
+            startGuidedPause();
+            break;
+          case "openDiary":
+            // Ir a la pantalla de diario
+            showScreen("diary");
+            break;
+          case "openReminders":
+            // Ir a la pantalla de recordatorios
+            showScreen("reminders");
+            break;
+          case "openChat":
+            // Ir a la pantalla de chat
+            showScreen("chat");
+            break;
+          case "openWater":
+            // Mostrar un mensaje específico de hidratación
+            openModal({
+              title: "Tómate un momento",
+              text: "Si puedes, toma ahora un vaso de agua tranquilo. Tu cuerpo también necesita que lo cuides.",
+              primaryLabel: null,
+              secondaryLabel: "Cerrar",
+              onPrimary: null,
+              onSecondary: null,
+              extraHtml: "",
+            });
+            break;
+          default:
+            break;
+        }
+      }
+
+      // Funcionalidad: pausa guiada simple con modal
+      function startGuidedPause() {
+        openModal({
+          title: "Pausa guiada",
+          text:
+            "Inhala 4 segundos, retén 4 y exhala en 6 segundos.\n" +
+            "Si puedes, repite este ciclo 3 veces. Solo por hoy, regálate estos segundos.",
+          primaryLabel: "Listo",
+          secondaryLabel: "Cerrar",
+          onPrimary: () => {
+            closeModal();
+          },
+          onSecondary: null,
+          extraHtml: "",
+        });
+      }
+
+      // Funcionalidad: guardar entrada de diario
+      function saveDiaryEntry() {
+        const textarea = document.querySelector("#screen-diary textarea");
+        const text = textarea.value.trim();
+
+        const selectedChip = document.querySelector(
+          "#screen-diary .chip.selected"
+        );
+        const mood = selectedChip
+          ? selectedChip.textContent.trim()
+          : "Sin estado";
+
+        if (!text && (!selectedChip || !mood)) {
+          openModal({
+            title: "Falta información",
+            text: "Escribe algo o elige al menos un estado de ánimo para guardar tu entrada de hoy.",
+            primaryLabel: null,
+            secondaryLabel: "Entendido",
+            onPrimary: null,
+            onSecondary: null,
+            extraHtml: "",
+          });
+          return;
+        }
+
+        const list = document.querySelector("#screen-diary .list");
+
+        const item = document.createElement("div");
+        item.className = "list-item";
+
+        const title = document.createElement("div");
+        title.className = "list-item-title";
+        const now = new Date();
+        const fecha = now.toLocaleDateString("es-ES", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        });
+        title.textContent = fecha + " · " + mood;
+
+        const time = document.createElement("div");
+        time.className = "list-item-time";
+        time.textContent = text || "Entrada rápida sin texto.";
+
+        item.appendChild(title);
+        item.appendChild(time);
+
+        if (list.firstChild) {
+          list.insertBefore(item, list.firstChild);
+        } else {
+          list.appendChild(item);
+        }
+
+        textarea.value = "";
+        const chips = document.querySelectorAll("#screen-diary .chip");
+        chips.forEach((c) => c.classList.remove("selected"));
+
+        openModal({
+          title: "Entrada guardada",
+          text: "Tu entrada de hoy ha sido guardada en tu diario.",
+          primaryLabel: null,
+          secondaryLabel: "Cerrar",
+          onPrimary: null,
+          onSecondary: null,
+          extraHtml: "",
+        });
+      }
+
+      // Funcionalidad: agregar nueva pausa con modal
+      function addPause() {
+        openModal({
+          title: "Nueva pausa",
+          text: "Agrega una pausa pensada solo para ti.",
+          primaryLabel: "Guardar pausa",
+          secondaryLabel: "Cancelar",
+          extraHtml:
+            '<div class="modal-field">' +
+            "  <label>Descripción</label>" +
+            '  <input id="pause-desc" class="modal-input" type="text" ' +
+            '    placeholder="Ej: Pausa de respiración de 1 minuto" />' +
+            "</div>" +
+            '<div class="modal-field">' +
+            "  <label>Hora</label>" +
+            '  <input id="pause-time" class="modal-input" type="text" ' +
+            '    placeholder="Ej: 15:30" />' +
+            "</div>",
+          onPrimary: () => {
+            const descInput = document.getElementById("pause-desc");
+            const timeInput = document.getElementById("pause-time");
+            const descripcion = descInput.value.trim();
+            const hora = timeInput.value.trim();
+
+            if (!descripcion || !hora) {
+              return;
+            }
+
+            const list = document.querySelector("#screen-reminders .list");
+
+            const item = document.createElement("div");
+            item.className = "list-item";
+
+            const title = document.createElement("div");
+            title.className = "list-item-title";
+            title.textContent = hora + " — " + descripcion;
+
+            const time = document.createElement("div");
+            time.className = "list-item-time";
+            time.textContent = "Activa · Personalizada";
+
+            item.appendChild(title);
+            item.appendChild(time);
+            list.appendChild(item);
+
+            updateRemindersBadge();
+            updateHeaderTotalBadge();
+
+            closeModal();
+          },
+          onSecondary: null,
+        });
+      }
+
+      // Funcionalidad: botón de voz (simulado)
+      function toggleVoiceMode() {
+        openModal({
+          title: "Modo voz",
+          text:
+            "Aquí la aplicación podría empezar a escuchar tu voz y convertir lo que dices en texto " +
+            "para enviarlo al asistente.\nPor ahora es una simulación visual.",
+          primaryLabel: null,
+          secondaryLabel: "Cerrar",
+          onPrimary: null,
+          onSecondary: null,
+          extraHtml: "",
+        });
+      }
+
+      // Chat mínimo "simulado"
+      function sendMessage() {
+        const input = document.getElementById("chat-input");
+        const text = input.value.trim();
+        if (!text) return;
+
+        const container = document.getElementById("chat-container");
+
+        // Burbuja de usuaria
+        const userBubble = document.createElement("div");
+        userBubble.className = "bubble user";
+        userBubble.textContent = text;
+        container.appendChild(userBubble);
+
+        // Respuesta simple simulada
+        const botBubble = document.createElement("div");
+        botBubble.className = "bubble bot";
+        botBubble.textContent =
+          "Gracias por compartir esto. Lo que sientes es válido. " +
+          "¿Te parece si nos regalamos unos segundos para respirar juntas?";
+        container.appendChild(botBubble);
+
+        // Limpiar input y hacer scroll al final
+        input.value = "";
+        container.scrollTop = container.scrollHeight;
+      }
+
+      // Funcionalidad: agregar publicación al foro
+      function addForumPost() {
+        const textarea = document.getElementById("forum-new-post");
+        const text = textarea.value.trim();
+        if (!text) return;
+
+        const list = document.getElementById("forum-list");
+
+        const item = document.createElement("div");
+        item.className = "list-item";
+
+        const title = document.createElement("div");
+        title.className = "list-item-title";
+
+        const now = new Date();
+        const fecha = now.toLocaleDateString("es-ES", {
+          day: "2-digit",
+          month: "short",
+        });
+
+        title.textContent = "Tú · " + fecha;
+
+        const body = document.createElement("div");
+        body.className = "list-item-time";
+        body.textContent = text;
+
+        item.appendChild(title);
+        item.appendChild(body);
+
+        list.insertBefore(item, list.firstChild);
+
+        textarea.value = "";
+
+        openModal({
+          title: "Publicado",
+          text: "Tu mensaje fue compartido con la comunidad.",
+          primaryLabel: null,
+          secondaryLabel: "Cerrar",
+          onPrimary: null,
+          onSecondary: null,
+          extraHtml: "",
+        });
+      }
+
+      // Llamadas directas (tel:)
+      function callNumber(number) {
+        const cleaned = String(number || "").replace(/[^\d+]/g, "");
+        if (!cleaned) return;
+        window.location.href = "tel:" + cleaned;
+      }
+
+      // Modal: opciones de movilización (Uber/Taxi/Vehículo)
+      function openTransportModal() {
+        openModal({
+          title: "Movilización",
+          text: "Elige una opción rápida para coordinar traslado.",
+          primaryLabel: null,
+          secondaryLabel: "Cerrar",
+          onPrimary: null,
+          onSecondary: null,
+          extraHtml:
+            '<div class="btn-row" style="margin-top:8px">' +
+            '  <button class="btn-pill" onclick="openUber()"><span class="emoji">🚕</span>Uber</button>' +
+            '  <button class="btn-pill" onclick="openTaxiModal()"><span class="emoji">🚖</span>Taxi</button>' +
+            '  <button class="btn-pill" onclick="openVehicleModal()"><span class="emoji">🚗</span>Vehículo</button>' +
+            "</div>" +
+            '<div class="card-text small" style="margin-top:10px;color:#666">' +
+            "Tip: en una app real, aquí se integraría deep link a Uber o la app de transporte que uses." +
+            "</div>",
+        });
+      }
+
+      function openUber() {
+        openModal({
+          title: "Uber",
+          text:
+            "En una app real, esto abriría Uber con un deep link.\n" +
+            "En esta demo, puedes usar la opción de Taxi o tus contactos favoritos.",
+          primaryLabel: null,
+          secondaryLabel: "Cerrar",
+          onPrimary: null,
+          onSecondary: null,
+          extraHtml: "",
+        });
+      }
+
+      function openTaxiModal() {
+        openModal({
+          title: "Taxi",
+          text: "Si tienes un número de taxi de confianza, guárdalo como favorito para llamarlo con un toque.",
+          primaryLabel: "Agregar taxi a favoritos",
+          secondaryLabel: "Cerrar",
+          onPrimary: () => {
+            closeModal();
+            openAddFavoriteContact("Taxi de confianza");
+          },
+          onSecondary: null,
+          extraHtml: "",
+        });
+      }
+
+      function openVehicleModal() {
+        openModal({
+          title: "Vehículo",
+          text: "Guarda a un familiar/amigo con vehículo como favorito para llamarlo rápido.",
+          primaryLabel: "Agregar contacto",
+          secondaryLabel: "Cerrar",
+          onPrimary: () => {
+            closeModal();
+            openAddFavoriteContact("Familiar / Amigo");
+          },
+          onSecondary: null,
+          extraHtml: "",
+        });
+      }
+
+      // Favoritos (localStorage)
+      function getFavoriteContacts() {
+        try {
+          const raw = localStorage.getItem("cuidarte_favorites");
+          const parsed = raw ? JSON.parse(raw) : [];
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function setFavoriteContacts(list) {
+        try {
+          localStorage.setItem(
+            "cuidarte_favorites",
+            JSON.stringify(list || [])
+          );
+        } catch (e) {}
+      }
+
+      function renderFavoriteContacts() {
+        const listEl = document.getElementById("favorite-contacts-list");
+        if (!listEl) return;
+
+        const favorites = getFavoriteContacts();
+        listEl.innerHTML = "";
+
+        if (!favorites.length) {
+          const empty = document.createElement("div");
+          empty.className = "list-item";
+          empty.innerHTML =
+            '<div class="list-item-title">Aún no tienes favoritos</div>' +
+            '<div class="list-item-time">Agrega un contacto importante para llamarlo rápido.</div>';
+          listEl.appendChild(empty);
+          return;
+        }
+
+        favorites.forEach((fav, idx) => {
+          const item = document.createElement("div");
+          item.className = "list-item";
+
+          const title = document.createElement("div");
+          title.className = "list-item-title";
+          title.textContent =
+            (fav.name || "Contacto") + " · " + (fav.phone || "");
+
+          const meta = document.createElement("div");
+          meta.className = "list-item-time";
+          meta.textContent = fav.note
+            ? fav.note
+            : "Toque para llamar · Doble click para editar";
+
+          const actions = document.createElement("div");
+          actions.className = "btn-row";
+          actions.style.marginTop = "8px";
+
+          const call = document.createElement("button");
+          call.className = "btn-pill";
+          call.innerHTML = '<span class="emoji">📞</span>Llamar';
+          call.onclick = () => callNumber(fav.phone);
+
+          const remove = document.createElement("button");
+          remove.className = "btn-pill";
+          remove.innerHTML = '<span class="emoji">🗑️</span>Quitar';
+          remove.onclick = () => {
+            openModal({
+              title: "Quitar favorito",
+              text: "¿Quieres eliminar este contacto de tus favoritos?",
+              primaryLabel: "Sí, quitar",
+              secondaryLabel: "Cancelar",
+              onPrimary: () => {
+                const next = getFavoriteContacts().filter((_, i) => i !== idx);
+                setFavoriteContacts(next);
+                closeModal();
+                renderFavoriteContacts();
+              },
+              onSecondary: null,
+              extraHtml: "",
+            });
+          };
+
+          actions.appendChild(call);
+          actions.appendChild(remove);
+
+          item.appendChild(title);
+          item.appendChild(meta);
+          item.appendChild(actions);
+
+          item.addEventListener("dblclick", () => openEditFavoriteContact(idx));
+
+          listEl.appendChild(item);
+        });
+      }
+
+      function openAddFavoriteContact(prefillName) {
+        openModal({
+          title: "Agregar favorito",
+          text: "Guarda un contacto importante para llamarlo rápido.",
+          primaryLabel: "Guardar",
+          secondaryLabel: "Cancelar",
+          extraHtml:
+            '<div class="modal-field">' +
+            "  <label>Nombre</label>" +
+            '  <input id="fav-name" class="modal-input" type="text" placeholder="Ej: Mamá" />' +
+            "</div>" +
+            '<div class="modal-field">' +
+            "  <label>Teléfono</label>" +
+            '  <input id="fav-phone" class="modal-input" type="tel" placeholder="Ej: +56912345678" />' +
+            "</div>" +
+            '<div class="modal-field">' +
+            "  <label>Nota (opcional)</label>" +
+            '  <input id="fav-note" class="modal-input" type="text" placeholder="Ej: Llamar si me siento mal" />' +
+            "</div>",
+          onPrimary: () => {
+            const name = document.getElementById("fav-name").value.trim();
+            const phone = document.getElementById("fav-phone").value.trim();
+            const note = document.getElementById("fav-note").value.trim();
+            if (!name || !phone) return;
+
+            const favorites = getFavoriteContacts();
+            favorites.unshift({ name, phone, note });
+            setFavoriteContacts(favorites);
+
+            closeModal();
+            renderFavoriteContacts();
+          },
+          onSecondary: null,
+        });
+
+        setTimeout(() => {
+          const nameInput = document.getElementById("fav-name");
+          if (nameInput && prefillName) nameInput.value = prefillName;
+        }, 0);
+      }
+
+      function openEditFavoriteContact(index) {
+        const favorites = getFavoriteContacts();
+        const current = favorites[index];
+        if (!current) return;
+
+        openModal({
+          title: "Editar favorito",
+          text: "Actualiza los datos del contacto.",
+          primaryLabel: "Guardar cambios",
+          secondaryLabel: "Cancelar",
+          extraHtml:
+            '<div class="modal-field">' +
+            "  <label>Nombre</label>" +
+            '  <input id="fav-edit-name" class="modal-input" type="text" />' +
+            "</div>" +
+            '<div class="modal-field">' +
+            "  <label>Teléfono</label>" +
+            '  <input id="fav-edit-phone" class="modal-input" type="tel" />' +
+            "</div>" +
+            '<div class="modal-field">' +
+            "  <label>Nota (opcional)</label>" +
+            '  <input id="fav-edit-note" class="modal-input" type="text" />' +
+            "</div>",
+          onPrimary: () => {
+            const name = document.getElementById("fav-edit-name").value.trim();
+            const phone = document
+              .getElementById("fav-edit-phone")
+              .value.trim();
+            const note = document.getElementById("fav-edit-note").value.trim();
+            if (!name || !phone) return;
+
+            const next = getFavoriteContacts();
+            next[index] = { name, phone, note };
+            setFavoriteContacts(next);
+
+            closeModal();
+            renderFavoriteContacts();
+          },
+          onSecondary: null,
+        });
+
+        setTimeout(() => {
+          document.getElementById("fav-edit-name").value = current.name || "";
+          document.getElementById("fav-edit-phone").value = current.phone || "";
+          document.getElementById("fav-edit-note").value = current.note || "";
+        }, 0);
+      }
+
+      function seedExampleFavorites() {
+        const examples = [
+          { name: "Mamá", phone: "+56911111111", note: "Si me siento mal" },
+          {
+            name: "Vecina de confianza",
+            phone: "+56922222222",
+            note: "Apoyo rápido",
+          },
+          {
+            name: "Taxi de confianza",
+            phone: "+56933333333",
+            note: "Traslado",
+          },
+        ];
+        setFavoriteContacts(examples);
+        renderFavoriteContacts();
+        openModal({
+          title: "Listo",
+          text: "Se cargaron ejemplos de favoritos para la demo.",
+          primaryLabel: null,
+          secondaryLabel: "Cerrar",
+          onPrimary: null,
+          onSecondary: null,
+          extraHtml: "",
+        });
+      }
+
+      // --------- MENÚ PERFIL DESPLEGABLE ---------
+      function toggleProfileMenu(event) {
+        event.stopPropagation();
+        const menu = document.getElementById("profile-menu");
+        if (!menu) return;
+        menu.classList.toggle("active");
+      }
+
+      function applyProfileInitial() {
+        const name = localStorage.getItem("cuidarte_user_name") || "Ana";
+        const initial = name.trim().charAt(0).toUpperCase();
+        const el = document.getElementById("header-profile-initial");
+        if (el) el.textContent = initial;
+      }
+
+      function applyUserProfile() {
+        const name = localStorage.getItem("cuidarte_user_name") || "Ana";
+        const email =
+          localStorage.getItem("cuidarte_user_email") || "cuidarte@gmail.com";
+
+        const initial = name.trim().charAt(0).toUpperCase();
+
+        // Header (letra)
+        const headerInitial = document.getElementById("header-profile-initial");
+        if (headerInitial) headerInitial.textContent = initial;
+
+        // Inicio
+        const homeGreeting = document.getElementById("home-greeting");
+        if (homeGreeting) homeGreeting.textContent = "Hola, " + name;
+
+        // Perfil
+        const pName = document.getElementById("profile-name");
+        const pEmail = document.getElementById("profile-email");
+        const pAvatar = document.getElementById("profile-avatar");
+
+        if (pName) pName.textContent = name;
+        if (pEmail) pEmail.textContent = email;
+        if (pAvatar) pAvatar.textContent = initial;
+      }
+
+      // Cerrar menú al hacer click fuera
+      document.addEventListener("click", () => {
+        const menu = document.getElementById("profile-menu");
+        if (menu) menu.classList.remove("active");
+      });
+
+      // Cerrar menú con ESC
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          const menu = document.getElementById("profile-menu");
+          if (menu) menu.classList.remove("active");
+        }
+      });
+    </script>
+  </body>
+</html>
